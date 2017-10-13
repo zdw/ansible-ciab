@@ -4,6 +4,13 @@
 
 For any information about `CiaB` please refer to the [Opencord Guide](guide.opencord.org)
 
+This playbook will start a tmux session on the target server and run the commands to install CORD-in-a-Box in it. 
+Once the playbook has executed, to check the installation process, you can connect to the server and attach the `tmux` session with:
+
+```
+tmux at -t cord-bootstrap
+```
+
 ## How to use it
 
 **Configure your server**

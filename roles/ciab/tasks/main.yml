@@ -1,6 +1,10 @@
 ---
 # ciab/tasks/main.yml
 
+- name: Install tmux
+  apt:
+    name: tmux
+
 - name: Download cord-bootstrap
   get_url:
     url: https://raw.githubusercontent.com/opencord/cord/master/scripts/cord-bootstrap.sh
@@ -33,7 +37,7 @@
 - debug: msg="{{ bootstrap | join(' ') }}"
 
 - name: Deploy
-  shell: "{{ bootstrap | join(' ') }} > tee ~/install.out"
+  shell: "tmux new -d -s cord-bootstrap '{{ bootstrap | join(' ')}}'"
   register: deploy
 
 - debug: msg="{{ deploy.stdout }}"
