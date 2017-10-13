@@ -23,10 +23,19 @@
 
 - name: Add default make target (config, build)
   set_fact:
-    bootstrap: "{{ bootstrap }} + [ '-t PODCONFIG={{ profile }}-virtual.yml config', '-t build']"
+    bootstrap: "{{ bootstrap }} + [ '-t \"PODCONFIG={{ profile }}-virtual.yml config\"', '-t \"build\"']"
 
-- debug: msg="{{bootstrap}}"
+- name: Add extra make targets
+  set_fact:
+    bootstrap: "{{ bootstrap }} + [ '-t \"{ item. }}\"']"
+  with_items: "{{ extra_make_targets }}"
+
+- debug: msg="{{ bootstrap | join(' ') }}"
 
 - name: Deploy
   shell: "{{ bootstrap | join(' ') }} > tee ~/install.out"
-  
+  register: deploy
+
+- debug: msg="{{ deploy.stdout }}"
+
+- debug: msg="{{ deploy.stderr }}"  

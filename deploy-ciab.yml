@@ -1,4 +1,4 @@
-- name: Include vars of stuff.yml into the 'stuff' variable (2.2).
+- name: Include vars from ciab-setting.yml
   hosts: all
   tasks:
     - name: Include variables
