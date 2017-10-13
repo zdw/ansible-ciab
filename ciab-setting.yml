@@ -1,0 +1,6 @@
+profile: 'mcord'
+patches:
+  - repo: xos
+    patch: 6348
+    changeset: 2
+extra_make_targets: [] # eg: "pod-test"

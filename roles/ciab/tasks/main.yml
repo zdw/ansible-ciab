@@ -1,0 +1,32 @@
+---
+# ciab/tasks/main.yml
+
+- name: Download cord-bootstrap
+  get_url:
+    url: https://raw.githubusercontent.com/opencord/cord/master/scripts/cord-bootstrap.sh
+    dest: ~/cord-bootstrap.sh
+
+
+- name: Set permissions on cord-bootstrap
+  file:
+    path: ~/cord-bootstrap.sh
+    mode: a+x
+
+- name: Initialize cord-bootstrap command
+  set_fact:
+    bootstrap: ['bash ~/cord-bootstrap.sh -v']
+
+- name: Add patches to cord-bootstrap
+  set_fact:
+    bootstrap: "{{ bootstrap }} + [ '-p {{ item.repo }}:{{ item.patch }}/{{ item.changeset }}']"
+  with_items: "{{ patches }}"
+
+- name: Add default make target (config, build)
+  set_fact:
+    bootstrap: "{{ bootstrap }} + [ '-t PODCONFIG={{ profile }}-virtual.yml config', '-t build']"
+
+- debug: msg="{{bootstrap}}"
+
+- name: Deploy
+  shell: "{{ bootstrap | join(' ') }} > tee ~/install.out"
+  

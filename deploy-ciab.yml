@@ -1,0 +1,10 @@
+- name: Include vars of stuff.yml into the 'stuff' variable (2.2).
+  hosts: all
+  tasks:
+    - name: Include variables
+      include_vars: ciab-setting.yml
+
+- name: Deploy CIAB
+  hosts: all
+  roles:
+    - ciab
