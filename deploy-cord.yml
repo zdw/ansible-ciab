@@ -29,12 +29,12 @@
     - name: Add patches to cord-bootstrap
       when: patches
       set_fact:
-        bootstrap: "{{ bootstrap }} + [ '-p {{ item.repo }}:{{ item.patch }}/{{ item.changeset }}']"
+        bootstrap: "{{ bootstrap }} + [ '-p {{ item.repo }}:{{ item.patch }}/{{ item.changeset }}' ]"
       with_items: "{{ patches }}"
 
     - name: Add default make targets (config, build)
       set_fact:
-        bootstrap: "{{ bootstrap }} + [ '-t \"PODCONFIG={{ podconfig }} config\"', '-t \"build\"']"
+        bootstrap: "{{ bootstrap }} + [ '-t \"PODCONFIG={{ podconfig }} config\"', '-t \"build\"' ]"
 
     - name: Add extra make targets
       when: extra_make_targets

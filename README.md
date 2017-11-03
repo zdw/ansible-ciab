@@ -10,26 +10,28 @@ This playbook will start a tmux session on the target server and run the
 commands to install CORD in it.  Once the playbook has executed, to check the
 installation process, you can connect to the server and attach the `tmux`
 session.
+
+
 ## How to use
 
-** Create an inventory file **
+### Create an inventory file
 
 Create an [ansible inventory
 file](http://docs.ansible.com/ansible/latest/intro_inventory.html) in
 `inventory` and add your server address.
 
-** Set Configurations **
+### Set Configuration
 
 Open `deploy-cord-settings.yml` and edit as needed. Gerrit patches and
 additional `make` targets to run after `config` and `build` can be added.
 
-** Run **
+### Run
 
 Execute the playbook with:
 
     ansible-playbook -i inventory/<your inventory file> deploy-cord.yml
 
-** Connect **
+### Connect
 
 SSH to the node, then run:
 
@@ -49,6 +51,6 @@ You can run a one-off command across your cluster as well - for example:
 
     ansible -i inventory/<inv file> -b -m command -a "shutdown -r now" all
 
-    ansible -i inventory/<inv file> -m shell -a "cd ~/cord/build; make clean-all; cd ~, rm -rf cord* 2017* build.log" all
+    ansible -i inventory/<inv file> -m shell -a "cd ~/cord/build; make clean-all; cd ~; rm -rf cord* 2017* build.log" all
 
 
