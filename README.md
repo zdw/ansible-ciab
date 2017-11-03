@@ -1,26 +1,54 @@
-# Ansible automation to deploy CORD-in-a-Box
+# Ansible playbook to mass-deploy CORD
 
-> NOTE that this tool is not supported by opencord. No mainteinance guarantee are give.
+> NOTE that this tool is not supported by opencord. No maintenance guarantee
+> are given
 
-For any information about `CiaB` please refer to the [Opencord Guide](guide.opencord.org)
+For any information about CORD please refer to the [Opencord
+Guide](guide.opencord.org)
 
-This playbook will start a tmux session on the target server and run the commands to install CORD-in-a-Box in it. 
-Once the playbook has executed, to check the installation process, you can connect to the server and attach the `tmux` session with:
+This playbook will start a tmux session on the target server and run the
+commands to install CORD in it.  Once the playbook has executed, to check the
+installation process, you can connect to the server and attach the `tmux`
+session.
+## How to use
 
-```
-tmux at -t cord-bootstrap
-```
+** Create an inventory file **
 
-## How to use it
+Create an [ansible inventory
+file](http://docs.ansible.com/ansible/latest/intro_inventory.html) in
+`inventory` and add your server address.
 
-**Configure your server**
+** Set Configurations **
 
-Open `inventory/cloudlab` and list your server address there
+Open `deploy-cord-settings.yml` and edit as needed. Gerrit patches and
+additional `make` targets to run after `config` and `build` can be added.
 
-**Configurations**
+** Run **
 
-Open `ciab-setting.yml` and edit it as needed, note that you can list as many patches as you want in there and you can add `make` targets to be executed after `config` and `build`.
+Execute the playbook with:
 
-**Run**
+    ansible-playbook -i inventory/<your inventory file> deploy-cord.yml
 
-Execute it with `ansible-playbook -i inventory/cloudlab deploy-ciab.yml`
+** Connect **
+
+SSH to the node, then run:
+
+    tmux attach
+
+When the build is finished, the `tmux` session will end.  See the logs in `~`
+to check the build status if this has happened.
+
+
+# Running one-off commands with ansible
+
+You can run a one-off command across your cluster as well - for example:
+
+    ansible -i inventory/<inv file> -m ping all
+
+    ansible -i inventory/<inv file> -b -m apt -a "update_cache=yes upgrade=dist" all
+
+    ansible -i inventory/<inv file> -b -m command -a "shutdown -r now" all
+
+    ansible -i inventory/<inv file> -m shell -a "cd ~/cord/build; make clean-all; cd ~, rm -rf cord* 2017* build.log" all
+
+

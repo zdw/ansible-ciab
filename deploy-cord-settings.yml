@@ -1,0 +1,17 @@
+---
+
+cord_branch: 'cord-4.1'
+
+cord_bootstrap_sh_checksum: "sha256:bc837cfd93bb368d86cec79c2cddcf1b38ef5179ee331192be4e763cffe1a19c"
+
+# valid for `master` on 2017-11-02:  cord_bootstrap_sh_checksum: "sha256:f35b2d60de2b5bffd26722cc3ec9aa91ee061ba8f29cd20db5b36f91387ada0b"
+
+podconfig: 'base-virtual.yml'
+
+patches:
+  - repo: build
+    patch: 6907
+    changeset: 2
+
+extra_make_targets: [] # eg: "pod-test"
+

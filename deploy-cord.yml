@@ -1,0 +1,60 @@
+---
+# Playbook to deploy CORD on multiple nodes in tmux sessions
+
+- name: CORD Deploy
+  hosts: all
+  tasks:
+
+    - name: Include variables
+      include_vars: deploy-cord-settings.yml
+
+    - name: Install tmux
+      become: yes
+      apt:
+        name: tmux
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Download cord-bootstrap
+      get_url:
+        url: "https://raw.githubusercontent.com/opencord/cord/{{ cord_branch }}/scripts/cord-bootstrap.sh"
+        checksum: "{{ cord_bootstrap_sh_checksum }}"
+        dest: ~/cord-bootstrap.sh
+        mode: 0755
+
+    - name: Create bootstrap fact with cord-bootstrap command
+      set_fact:
+        bootstrap: ['bash ~/cord-bootstrap.sh -v']
+
+    - name: Add patches to cord-bootstrap
+      when: patches
+      set_fact:
+        bootstrap: "{{ bootstrap }} + [ '-p {{ item.repo }}:{{ item.patch }}/{{ item.changeset }}']"
+      with_items: "{{ patches }}"
+
+    - name: Add default make targets (config, build)
+      set_fact:
+        bootstrap: "{{ bootstrap }} + [ '-t \"PODCONFIG={{ podconfig }} config\"', '-t \"build\"']"
+
+    - name: Add extra make targets
+      when: extra_make_targets
+      set_fact:
+        bootstrap: "{{ bootstrap }} + [ '-t \"{ item. }}\"']"
+      with_items: "{{ extra_make_targets }}"
+
+    - debug:
+        msg: "Bootstrap command: `{{ bootstrap | join(' ') }}`"
+
+    - name: Create tmux session with bootstrap command
+      command: "tmux new -d -s cord-bootstrap '{{ bootstrap | join(' ')}} |& tee -a build.log'"
+      register: deploy
+      tags:
+        - skip_ansible_lint
+
+    - debug:
+        msg: "{{ deploy.stdout }}"
+
+    - debug:
+        msg: "{{ deploy.stderr }}"
+
+
